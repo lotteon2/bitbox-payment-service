@@ -1,10 +1,8 @@
 package com.bixbox.payment.controller;
 
-import com.bixbox.payment.exception.KakaoPayArgumentException;
 import com.bixbox.payment.dto.PaymentDto;
 import com.bixbox.payment.util.EntityValidation;
 import com.bixbox.payment.util.KakaoPayUtil;
-import io.github.bitbox.bitbox.enums.SubscriptionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

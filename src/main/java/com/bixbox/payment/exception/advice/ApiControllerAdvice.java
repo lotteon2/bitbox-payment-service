@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ApiControllerAdvice {
+    //KafkaSubmitException, UrgentMailException
+
     @ExceptionHandler(KakaoPayFailException.class)
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public ErrorResponse kakaoExceptionHandler(KakaoPayFailException e){

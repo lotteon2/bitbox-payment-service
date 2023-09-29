@@ -4,6 +4,7 @@ import com.bixbox.payment.dto.KakaoPayCancelDto;
 import com.bixbox.payment.dto.KakaoPayDto;
 import com.bixbox.payment.exception.KakaoPayFailException;
 import com.bixbox.payment.dto.PaymentDto;
+import com.bixbox.payment.exception.UrgentMailException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -70,7 +71,7 @@ public class KakaoPayUtil {
             return callKakaoApi(kakaoCancelUrl, getKakaoPayCancelPayLoadData(kakaoPayCancelDto)).getStatusCode().value();
         }catch(KakaoPayFailException e){
             log.error("에러 발생"); // TODO 이런거 로그파일로 관리해야함
-            throw e;
+            throw new UrgentMailException("카카오페이 취소하는 과정에서 에러발생",e);
         }
     }
 
