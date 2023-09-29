@@ -1,6 +1,8 @@
 package com.bixbox.payment.controller;
 
+import com.bixbox.payment.dto.KakaoPayDto;
 import com.bixbox.payment.service.PaymentService;
+import com.bixbox.payment.util.KakaoPayUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,22 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class PaymentController {
     private final PaymentService paymentService;
+    private final KakaoPayUtil kakaoPayUtil;
     private final RedisTemplate<String, String> redisTemplate;
 
     @RequestMapping
     public String kakaoSuccess(@RequestParam("partnerOrderId") String partnerOrderId,
                                @RequestParam("pg_token") String pgToken){
-        /*  cid : 가능
-            tid : 준비API응답,
-            partner_order_id: 파라미터,
-            partner_user_id:  헤더에 있음(가능할듯),
-            pg_token: 가능
-         */
-
         ValueOperations<String, String> vop = redisTemplate.opsForValue();
-        log.info("value = {}",vop.get(partnerOrderId));
+        KakaoPayDto kakaoPayDto = kakaoPayUtil.getKakaoPayDto(vop.get(partnerOrderId), pgToken);
+
+        paymentService.createPayment(kakaoPayDto);
         return generatePageCloseCodeWithAlert("카카오페이 결제가 제대로 수행되었습니다.");
     }
+
     @GetMapping("/fail")
     public String kakaoFail() {
         return generatePageCloseCodeWithAlert("카카오페이 결제가 정상적으로 종료되지 않았습니다.");
@@ -50,3 +49,14 @@ public class PaymentController {
         return htmlCode;
     }
 }
+
+// 구독권 조회(채팅 모듈에서 사용) -> 서킷브레이커 (/member/subscription) GET
+// 결제내역 조회 -> /payments?page={page} GET
+// 테스트코드 작성 및 코드리뷰?
+
+/* -> 다음주에 고려
+    jwt 토큰자체(헤더) -> @RequestHeader("Authorization") String jwtToken
+    페이로드(어디에 저장이 될까? 헤더 or 바디?)
+    - 유저아이디(member_id)
+    - 유저권한
+ */

@@ -1,7 +1,9 @@
 package com.bixbox.payment.domain;
 
-import io.github.bitbox.bitbox.enums.SubscriptionType;
+import com.bixbox.payment.dto.KakaoPayDto;
+import com.bixbox.payment.enums.PaymentType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -10,6 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name="payment")
 public class Payment {
     @Id
@@ -35,7 +38,18 @@ public class Payment {
     @Column(name="payment_serial", nullable = false)
     private String paymentSerial; // tid
 
-    @Column(name="subscriptionType", nullable = false)
-    @Enumerated(EnumType.ORDINAL)
-    private SubscriptionType subscriptionType;
+    @Column(name="payment_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PaymentType paymentType;
+
+    public static Payment createKakaoPayDtoToPayment(KakaoPayDto kakaoPayDto){
+        return Payment.builder()
+                .memberId(kakaoPayDto.getPartnerUserId())
+                .paymentDate(LocalDateTime.now())
+                .paymentAmount(kakaoPayDto.getAmount())
+                .taxFreeAmount(kakaoPayDto.getTaxFreeAmount())
+                .productName(kakaoPayDto.getItemName())
+                .paymentSerial(kakaoPayDto.getTid())
+                .paymentType(PaymentType.KAKAOPAY).build();
+    }
 }

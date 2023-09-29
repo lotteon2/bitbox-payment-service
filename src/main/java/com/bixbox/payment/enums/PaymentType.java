@@ -5,13 +5,13 @@ public enum PaymentType {
     TOSSPAY(101),
     ACCOUNT(102);
 
-    private final int code;
+    private final int value;
 
-    PaymentType(int code) {
-        this.code = code;
+    private PaymentType(int value) {
+        this.value = value;
     }
 
-    public int getCode() {
-        return code;
+    public int getValue() {
+        return this.value;
     }
 }

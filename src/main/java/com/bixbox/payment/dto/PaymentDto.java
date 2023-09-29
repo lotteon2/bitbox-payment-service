@@ -1,13 +1,11 @@
-package com.bixbox.payment.temp;
+package com.bixbox.payment.dto;
 
 import io.github.bitbox.bitbox.enums.SubscriptionType;
-import lombok.Builder;
 import lombok.Getter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-@Builder
 @Getter
 public class PaymentDto {
     @NotEmpty(message = "파트너 주문 번호는 비어있을 수 없습니다.")
