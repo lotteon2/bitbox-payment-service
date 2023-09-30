@@ -15,3 +15,21 @@ spring:
       hibernate:
         jdbc:
           batch_size: 500
+# 밑부터는 mock data
+  kafka:
+    consumer:
+      group-id: csh
+  redis:
+    port: 1111
+    host: localhost
+    password: test
+cid: csh
+approvalUrl: csh
+cancelUrl: csh
+failUrl: csh
+kakaoPayKey: csh
+kakao-readyUrl: csh
+kakao-approveUrl: csh
+kakao-cancelUrl: csh
+creditTopic: csh
+cancelTopic: csh

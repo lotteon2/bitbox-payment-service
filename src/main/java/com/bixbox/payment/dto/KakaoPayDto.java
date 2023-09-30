@@ -1,9 +1,11 @@
 package com.bixbox.payment.dto;
 
 import io.github.bitbox.bitbox.enums.SubscriptionType;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class KakaoPayDto {
     private String cid;
     private String tid;
