@@ -2,18 +2,36 @@ package com.bixbox.payment.exception.advice;
 
 import com.bixbox.payment.exception.KakaoPayArgumentException;
 import com.bixbox.payment.exception.KakaoPayFailException;
+import com.bixbox.payment.exception.NotFoundException;
+import com.bixbox.payment.exception.SubscriptionExistException;
 import com.bixbox.payment.exception.response.ErrorResponse;
+import com.bixbox.payment.util.KakaoPayUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class ApiControllerAdvice {
     //KafkaSubmitException, UrgentMailException
+    private final KakaoPayUtil kakaoPayUtil;
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse notFoundException(NotFoundException e) {
+        return ErrorResponse.builder()
+                .message(e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(SubscriptionExistException.class)
+    public String handleSubscriptionExistException(SubscriptionExistException e) {
+        return kakaoPayUtil.generatePageCloseCodeWithAlert(e.getMessage());
+    }
 
     @ExceptionHandler(KakaoPayFailException.class)
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
@@ -39,7 +57,6 @@ public class ApiControllerAdvice {
 
     @ExceptionHandler(HttpMessageNotReadableException.class) // 아규먼트 변환이 불가한 경우
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
     public ErrorResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         //log.error();
         return ErrorResponse.builder()
@@ -49,7 +66,6 @@ public class ApiControllerAdvice {
 
     @ExceptionHandler(KakaoPayArgumentException.class) // 커스텀적인 카카오페이 아규먼트 예외
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
     public ErrorResponse handleHttpMessageNotReadableException(KakaoPayArgumentException e) {
         //log.error();
         return ErrorResponse.builder()

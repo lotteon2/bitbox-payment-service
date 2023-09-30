@@ -1,6 +1,7 @@
 package com.bixbox.payment.service;
 
 import com.bixbox.payment.dto.KakaoPayCancelDto;
+import com.bixbox.payment.exception.UrgentMailException;
 import com.bixbox.payment.util.KakaoPayUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -21,8 +22,8 @@ public class CancelService {
         MemberPaymentDto memberPaymentDto;
         try {
             memberPaymentDto = mapper.readValue(kafkaMessage, new TypeReference<>() {});
-        } catch (JsonProcessingException ex) {
-            throw new RuntimeException(ex);
+        } catch (JsonProcessingException ex) { // 보내주는 쪽에서 잘못된 타입으로 보내주는 케이스
+            throw new UrgentMailException(ex);
         }
 
         kakaoPayUtil.callKakaoCancelApi(KakaoPayCancelDto.MemberPaymentDtoToKakaoPayCancelDto(memberPaymentDto));

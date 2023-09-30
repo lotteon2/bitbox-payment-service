@@ -3,6 +3,7 @@ package com.bixbox.payment.service;
 import com.bixbox.payment.domain.Payment;
 import com.bixbox.payment.domain.Subscription;
 import com.bixbox.payment.dto.KakaoPayDto;
+import com.bixbox.payment.exception.SubscriptionExistException;
 import com.bixbox.payment.repository.PaymentRepository;
 import com.bixbox.payment.repository.SubscriptionRepository;
 import com.bixbox.payment.util.KafkaUtil;
@@ -26,6 +27,9 @@ public class PaymentService {
         paymentRepository.save(Payment.createKakaoPayDtoToPayment(kakaoPayDto));
         
         if(kakaoPayDto.getCredit() == null){ // 구독권 결제인 경우 구독권 관련 테이블에 insert 후 early return
+            subscriptionRepository.findByMemberIdAndIsValidTrue(kakaoPayDto.getPartnerUserId()).ifPresent(subscription -> {
+                throw new SubscriptionExistException("구독권 정보가 존재합니다");
+            });
             subscriptionRepository.save(Subscription.createKakaoPayDtoToSubscription(kakaoPayDto));
             return;
         }

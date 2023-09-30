@@ -21,7 +21,6 @@ public class KakaoPayController {
     public ResponseEntity<String> paymentRequest(@RequestBody @Valid PaymentDto paymentDto){
         EntityValidation.validPaymentDto(paymentDto);
 
-        return kakaoPayUtil.callKakaoReadyApi("csh", paymentDto); // TODO partnerUserId는 헤더에서 가져옴
+        return kakaoPayUtil.callKakaoReadyApi(paymentDto);
     }
-
 }

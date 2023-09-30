@@ -51,9 +51,9 @@ public class KakaoPayUtil {
     private final ObjectMapper objectMapper;
     private final KafkaUtil kafkaUtil;
 
-    public ResponseEntity<String> callKakaoReadyApi(String partnerUserId, PaymentDto paymentDto) {
-        ResponseEntity<String> exchange = callKakaoApi(kakaoReadyUrl, getKakaoPayReadyPayloadData(partnerUserId, paymentDto));
-        savePaymentInfoToRedis(exchange, paymentDto, partnerUserId);
+    public ResponseEntity<String> callKakaoReadyApi(PaymentDto paymentDto) {
+        ResponseEntity<String> exchange = callKakaoApi(kakaoReadyUrl, getKakaoPayReadyPayloadData(paymentDto));
+        savePaymentInfoToRedis(exchange, paymentDto);
         return exchange;
     }
 
@@ -105,10 +105,10 @@ public class KakaoPayUtil {
         }
     }
 
-    private String getKakaoPayReadyPayloadData(String partnerUserId, PaymentDto paymentDto){
+    private String getKakaoPayReadyPayloadData(PaymentDto paymentDto){
         return "cid=" + cid
                 + "&partner_order_id=" + paymentDto.getPartnerOrderId() // UUID
-                + "&partner_user_id=" + partnerUserId
+                + "&partner_user_id=" + paymentDto.getPartnerUserId()
                 + "&item_name=" + paymentDto.getItemName()
                 + "&quantity=" + paymentDto.getQuantity()
                 + "&total_amount=" + paymentDto.getTotalAmount()
@@ -142,7 +142,7 @@ public class KakaoPayUtil {
         }
     }
 
-    private void savePaymentInfoToRedis(ResponseEntity<String> jsonResponse, PaymentDto paymentDto, String partnerUserId){
+    private void savePaymentInfoToRedis(ResponseEntity<String> jsonResponse, PaymentDto paymentDto){
         ValueOperations<String, String> vop = redisTemplate.opsForValue();
 
         ObjectNode jsonNode = objectMapper.createObjectNode();
@@ -151,7 +151,7 @@ public class KakaoPayUtil {
         jsonNode.put("amount", paymentDto.getTotalAmount());
         jsonNode.put("itemName", paymentDto.getItemName());
         jsonNode.put("taxFreeAmount", paymentDto.getTaxFreeAmount());
-        jsonNode.put("partnerUserId", partnerUserId);
+        jsonNode.put("partnerUserId", paymentDto.getPartnerUserId());
         jsonNode.put("partnerOrderId",paymentDto.getPartnerOrderId());
         Long credit = paymentDto.getChargeCredit();
         if (credit != null) {
@@ -167,5 +167,18 @@ public class KakaoPayUtil {
         } catch (JsonProcessingException e) {
             throw new RuntimeException("레디스에 들어갈 데이터를 만드는 과정에서 문제가 발생했습니다.");
         }
+    }
+
+    public String generatePageCloseCodeWithAlert(String alertMessage) {
+        String htmlCode = "<!DOCTYPE html><html><head></head><body>";
+        htmlCode += "<script>";
+        htmlCode += "window.onload = function() {";
+        htmlCode += "  alert('" + alertMessage + "');";
+        htmlCode += "  window.close();";
+        htmlCode += "};";
+        htmlCode += "</script>";
+        htmlCode += "</body></html>";
+
+        return htmlCode;
     }
 }
