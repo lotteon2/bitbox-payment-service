@@ -13,24 +13,23 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/members")
+@RequestMapping("/")
 public class MemberController {
     private final MemberService memberService;
+    private String headerMemberId = "csh";
 
-    @GetMapping("/{memberId}/subscription")
-    public ResponseEntity<SubscriptionResponse> memberSubscription(@PathVariable String memberId) {
-        return ResponseEntity.ok(memberService.getMemberSubscription(memberId));
+    @GetMapping("/subscription")
+    public ResponseEntity<SubscriptionResponse> memberSubscription() {
+        return ResponseEntity.ok(memberService.getMemberSubscription(headerMemberId));
     }
 
-    @GetMapping("/{memberId}/payments")
-    public List<Payment> memberPayments(@PathVariable String memberId,
-                                            Pageable pageable) {
-        return memberService.getPaymentsByMemberId(memberId, pageable);
+    @GetMapping("/payments")
+    public List<Payment> memberPayments(Pageable pageable) {
+        return memberService.getPaymentsByMemberId(headerMemberId, pageable);
     }
 
-    @GetMapping("/{memberId}/payments/count")
-    public ResponseEntity<PaymentPageCountResponse> memberPaymentCount(@PathVariable String memberId,
-                                                                       @RequestParam int size){
-        return ResponseEntity.ok(memberService.getPaymentCountByMemberId(memberId,size));
+    @GetMapping("/payments/count")
+    public ResponseEntity<PaymentPageCountResponse> memberPaymentCount(@RequestParam int size){
+        return ResponseEntity.ok(memberService.getPaymentCountByMemberId(headerMemberId,size));
     }
 }
