@@ -13,12 +13,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 public class KafkaUtil {
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final KafkaTemplate<String, MemberPaymentDto> kafkaTemplate;
     @Value("${creditTopic}")
     private String creditTopic;
 
     public void callKafkaWithKakaoPayDto(KakaoPayDto kakaoPayDto, Long credit){
-        KafkaProducer.send(kafkaTemplate, creditTopic, MemberPaymentDto.builder()
+        kafkaTemplate.send(creditTopic, MemberPaymentDto.builder()
                 .memberId(kakaoPayDto.getPartnerUserId())
                 .memberCredit(credit)
                 .tid(kakaoPayDto.getTid())
