@@ -19,6 +19,8 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URLEncoder;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -109,7 +111,7 @@ public class KakaoPayUtil {
         return "cid=" + cid
                 + "&partner_order_id=" + paymentDto.getPartnerOrderId() // UUID
                 + "&partner_user_id=" + paymentDto.getPartnerUserId()
-                + "&item_name=" + paymentDto.getItemName()
+                + "&item_name=" + URLEncoder.encode(paymentDto.getItemName())
                 + "&quantity=" + paymentDto.getQuantity()
                 + "&total_amount=" + paymentDto.getTotalAmount()
                 + "&tax_free_amount=" + paymentDto.getTaxFreeAmount()
