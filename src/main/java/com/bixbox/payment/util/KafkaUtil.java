@@ -2,7 +2,6 @@ package com.bixbox.payment.util;
 
 import com.bixbox.payment.dto.KakaoPayDto;
 import io.github.bitbox.bitbox.dto.MemberPaymentDto;
-import io.github.bitbox.bitbox.util.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
