@@ -23,4 +23,8 @@ public class PaymentDto {
     private Long taxFreeAmount;
     private SubscriptionType subscriptionType;
     private Long chargeCredit;
+
+    public void setPartnerUserId(String partnerUserId) {
+        this.partnerUserId = partnerUserId;
+    }
 }

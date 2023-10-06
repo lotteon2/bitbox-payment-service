@@ -4,6 +4,7 @@ import com.bitbox.payment.dto.KakaoPayCancelDto;
 import com.bitbox.payment.dto.KakaoPayDto;
 import com.bitbox.payment.exception.KakaoPayFailException;
 import com.bitbox.payment.dto.PaymentDto;
+import com.bitbox.payment.exception.KakaoPayReadyException;
 import com.bitbox.payment.exception.UrgentMailException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -51,20 +52,25 @@ public class KakaoPayUtil {
 
     private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper;
-    private final KafkaUtil kafkaUtil;
 
     public ResponseEntity<String> callKakaoReadyApi(PaymentDto paymentDto) {
-        ResponseEntity<String> exchange = callKakaoApi(kakaoReadyUrl, getKakaoPayReadyPayloadData(paymentDto));
-        savePaymentInfoToRedis(exchange, paymentDto);
+        ResponseEntity<String> exchange;
+        try{
+            exchange = callKakaoApi(kakaoReadyUrl, getKakaoPayReadyPayloadData(paymentDto));
+            savePaymentInfoToRedis(exchange, paymentDto);
+        }catch(Exception e){
+            // 사실 레디스에서 터질 수 있긴한데 그렇다고 예외를 구분하기는 좀 그래서 하나로 퉁침
+            throw new KakaoPayReadyException("카카오 페이 결제 서버 관련 문제가 발생했습니다");
+        }
+
         return exchange;
     }
 
     public int callKakaoApproveApi(KakaoPayDto kakaoPayDto) {
         try{
             return callKakaoApi(kakaoApproveUrl, getKakaoPayApprovePayLoadData(kakaoPayDto)).getStatusCode().value();
-        }catch(KakaoPayFailException e){ // 승인 요청하다가 예외가 발생한 경우 크레딧 차감하라는 요청을 보내야함
-            kafkaUtil.callKafkaWithKakaoPayDto(kakaoPayDto, -kakaoPayDto.getCredit());
-            throw e;
+        }catch(KakaoPayFailException e){
+            throw new KakaoPayFailException("카카오 페이 결제 실패");
         }
     }
 

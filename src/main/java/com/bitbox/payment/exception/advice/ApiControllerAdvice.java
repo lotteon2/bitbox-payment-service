@@ -1,9 +1,6 @@
 package com.bitbox.payment.exception.advice;
 
-import com.bitbox.payment.exception.KakaoPayArgumentException;
-import com.bitbox.payment.exception.KakaoPayFailException;
-import com.bitbox.payment.exception.NotFoundException;
-import com.bitbox.payment.exception.SubscriptionExistException;
+import com.bitbox.payment.exception.*;
 import com.bitbox.payment.exception.response.ErrorResponse;
 import com.bitbox.payment.util.KakaoPayUtil;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +31,13 @@ public class ApiControllerAdvice {
     }
 
     @ExceptionHandler(KakaoPayFailException.class)
+    public String handleKakaoPayFailException(KakaoPayFailException e) {
+        return kakaoPayUtil.generatePageCloseCodeWithAlert(e.getMessage());
+    }
+
+    @ExceptionHandler(KakaoPayReadyException.class)
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-    public ErrorResponse kakaoExceptionHandler(KakaoPayFailException e){
-        //log.error();
+    public ErrorResponse handleKakaoPayReadyException(KakaoPayFailException e){
         return ErrorResponse.builder()
                 .message(e.getMessage())
                 .build();
@@ -44,7 +45,7 @@ public class ApiControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class) // 아규먼트 존재 안하는 케이스
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse processValidationError(MethodArgumentNotValidException e) {
+    public ErrorResponse handleValidationError(MethodArgumentNotValidException e) {
         //log.error();
 
         return ErrorResponse.builder()

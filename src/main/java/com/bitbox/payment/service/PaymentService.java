@@ -7,20 +7,24 @@ import com.bitbox.payment.exception.KakaoPayFailException;
 import com.bitbox.payment.exception.SubscriptionExistException;
 import com.bitbox.payment.repository.PaymentRepository;
 import com.bitbox.payment.repository.SubscriptionRepository;
-import com.bitbox.payment.util.KafkaUtil;
 import com.bitbox.payment.util.KakaoPayUtil;
+import io.github.bitbox.bitbox.dto.MemberPaymentDto;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
+    private final KafkaTemplate<String, MemberPaymentDto> kafkaTemplate;
     private final SubscriptionRepository subscriptionRepository;
     private final PaymentRepository paymentRepository;
     private final KakaoPayUtil kakaoPayUtil;
-    private final KafkaUtil kafkaUtil;
+    @Value("${creditTopic}")
+    private String creditTopic;
 
     @Transactional
     public void createPayment(KakaoPayDto kakaoPayDto) {
@@ -38,7 +42,13 @@ public class PaymentService {
         if (kakaoPayUtil.callKakaoApproveApi(kakaoPayDto) != HttpStatus.SC_OK) {
             throw new KakaoPayFailException("카카오 페이 결제 실패");
         }
-        kafkaUtil.callKafkaWithKakaoPayDto(kakaoPayDto, kakaoPayDto.getCredit());
 
+        kafkaTemplate.send(creditTopic, MemberPaymentDto.builder()
+                        .memberId(kakaoPayDto.getPartnerUserId())
+                        .memberCredit(kakaoPayDto.getCredit())
+                        .tid(kakaoPayDto.getTid())
+                        .cancelAmount(kakaoPayDto.getAmount())
+                        .cancelTaxFreeAmount(kakaoPayDto.getTaxFreeAmount())
+                        .build());
     }
 }

@@ -18,17 +18,17 @@ public class MemberController {
     private final MemberService memberService;
     private String headerMemberId = "csh";
 
-    @GetMapping("/subscription")
+    @GetMapping("member/subscription")
     public ResponseEntity<SubscriptionResponse> memberSubscription() {
         return ResponseEntity.ok(memberService.getMemberSubscription(headerMemberId));
     }
 
-    @GetMapping("/payments")
+    @GetMapping("member/payments")
     public List<Payment> memberPayments(Pageable pageable) {
         return memberService.getPaymentsByMemberId(headerMemberId, pageable);
     }
 
-    @GetMapping("/payments/count")
+    @GetMapping("member/payments/count")
     public ResponseEntity<PaymentPageCountResponse> memberPaymentCount(@RequestParam int size){
         return ResponseEntity.ok(memberService.getPaymentCountByMemberId(headerMemberId,size));
     }

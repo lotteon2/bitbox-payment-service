@@ -17,9 +17,11 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class KakaoPayController {
     private final KakaoPayUtil kakaoPayUtil;
+    private String headerMemberId = "csh"; // TODO HEADER값으로 변경 필요
     @PostMapping("/payment-request")
     public ResponseEntity<String> paymentRequest(@RequestBody @Valid PaymentDto paymentDto){
         EntityValidation.validPaymentDto(paymentDto);
+        paymentDto.setPartnerUserId(headerMemberId);
 
         return kakaoPayUtil.callKakaoReadyApi(paymentDto);
     }
