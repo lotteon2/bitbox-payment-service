@@ -6,6 +6,7 @@ import com.bitbox.payment.util.KakaoPayUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.kafka.KafkaException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -73,6 +74,16 @@ public class ApiControllerAdvice {
                 .message(e.getMessage())
                 .build();
     }
+
+    @ExceptionHandler(KafkaException.class)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public ErrorResponse handleKafkaException(KafkaException e){
+        //TODO 카프카 예외 발생시 어떻게 처리할까?(카프카에 보내는것이 불가능한 케이스임)
+        return ErrorResponse.builder()
+                .message("카프카 서버에 접속할 수 없습니다.")
+                .build();
+    }
+
 }
 
 // TODO 시간남으면 logback 설정(error만 저장하게끔)
