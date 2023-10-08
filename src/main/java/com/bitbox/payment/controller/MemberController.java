@@ -23,6 +23,11 @@ public class MemberController {
         return ResponseEntity.ok(memberService.getMemberSubscription(headerMemberId));
     }
 
+    @GetMapping("member/{memberId}/subscription")
+    public ResponseEntity<SubscriptionResponse> memberSubscription(@PathVariable String memberId) {
+        return ResponseEntity.ok(memberService.getMemberSubscription(memberId));
+    }
+
     @GetMapping("member/payments")
     public List<Payment> memberPayments(Pageable pageable) {
         return memberService.getPaymentsByMemberId(headerMemberId, pageable);
