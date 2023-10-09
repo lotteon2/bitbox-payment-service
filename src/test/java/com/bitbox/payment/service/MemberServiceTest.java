@@ -2,11 +2,11 @@ package com.bitbox.payment.service;
 
 import com.bitbox.payment.domain.Payment;
 import com.bitbox.payment.domain.Subscription;
-import com.bitbox.payment.enums.PaymentType;
 import com.bitbox.payment.exception.NotFoundException;
 import com.bitbox.payment.repository.PaymentRepository;
 import com.bitbox.payment.repository.SubscriptionRepository;
 import com.bitbox.payment.service.response.PaymentPageCountResponse;
+import io.github.bitbox.bitbox.enums.PaymentType;
 import io.github.bitbox.bitbox.enums.SubscriptionType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

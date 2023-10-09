@@ -1,7 +1,7 @@
 package com.bitbox.payment.domain;
 
 import com.bitbox.payment.dto.KakaoPayDto;
-import com.bitbox.payment.enums.PaymentType;
+import io.github.bitbox.bitbox.enums.PaymentType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
