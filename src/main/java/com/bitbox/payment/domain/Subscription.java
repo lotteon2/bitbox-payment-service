@@ -1,8 +1,6 @@
 package com.bitbox.payment.domain;
 
-import com.bitbox.payment.dto.KakaoPayDto;
 import io.github.bitbox.bitbox.enums.SubscriptionType;
-import io.github.bitbox.bitbox.util.DateTimeUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Getter
 @Entity
@@ -39,32 +36,4 @@ public class Subscription {
     @Column(name="subscription_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private SubscriptionType subscriptionType;
-
-    public static Subscription createKakaoPayDtoToSubscription(KakaoPayDto kakaoPayDto){
-        LocalDateTime currentTime = LocalDateTime.now();
-        LocalDateTime endTime;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-
-        switch (kakaoPayDto.getSubscription()) {
-            case ONE_DAY:
-                endTime = currentTime.plusDays(1);
-                break;
-            case THREE_DAYS:
-                endTime = currentTime.plusDays(3);
-                break;
-            case SEVEN_DAYS:
-                endTime = currentTime.plusDays(7);
-                break;
-            default:
-                throw new RuntimeException("존재하지 않는 구독권 타입입니다.");
-        }
-
-        return Subscription.builder()
-                .memberId(kakaoPayDto.getPartnerUserId())
-                .startDate(DateTimeUtil.convertTimeFormat(currentTime.format(formatter)))
-                .endDate(DateTimeUtil.convertTimeFormat(endTime.format(formatter)))
-                .isValid(true)
-                .subscriptionType(kakaoPayDto.getSubscription())
-                .build();
-    }
 }

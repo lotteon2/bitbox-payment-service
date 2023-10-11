@@ -29,13 +29,13 @@ public class PaymentService {
     @Transactional
     public void createPayment(KakaoPayDto kakaoPayDto) {
         // 결제 테이블(payment)에 결제 정보를 insert 한다
-        paymentRepository.save(Payment.createKakaoPayDtoToPayment(kakaoPayDto));
+        paymentRepository.save(KakaoPayDto.createKakaoPayDtoToPayment(kakaoPayDto));
 
         if (kakaoPayDto.getCredit() == null) { // 구독권 결제인 경우 구독권 관련 테이블에 insert 후 early return
             subscriptionRepository.findByMemberIdAndIsValidTrue(kakaoPayDto.getPartnerUserId()).ifPresent(subscription -> {
                 throw new SubscriptionExistException("구독권 정보가 존재합니다");
             });
-            subscriptionRepository.save(Subscription.createKakaoPayDtoToSubscription(kakaoPayDto));
+            subscriptionRepository.save(KakaoPayDto.createKakaoPayDtoToSubscription(kakaoPayDto));
             return;
         }
 

@@ -1,6 +1,5 @@
 package com.bitbox.payment.domain;
 
-import com.bitbox.payment.dto.KakaoPayDto;
 import io.github.bitbox.bitbox.enums.PaymentType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,15 +42,4 @@ public class Payment {
     @Column(name="payment_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
-
-    public static Payment createKakaoPayDtoToPayment(KakaoPayDto kakaoPayDto){
-        return Payment.builder()
-                .memberId(kakaoPayDto.getPartnerUserId())
-                .paymentDate(LocalDateTime.now())
-                .paymentAmount(kakaoPayDto.getAmount())
-                .taxFreeAmount(kakaoPayDto.getTaxFreeAmount())
-                .productName(kakaoPayDto.getItemName())
-                .paymentSerial(kakaoPayDto.getTid())
-                .paymentType(PaymentType.KAKAOPAY).build();
-    }
 }
