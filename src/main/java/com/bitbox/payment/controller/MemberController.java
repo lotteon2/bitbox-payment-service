@@ -29,8 +29,8 @@ public class MemberController {
     }
 
     @GetMapping("member/payments")
-    public List<Payment> memberPayments(Pageable pageable) {
-        return memberService.getPaymentsByMemberId(headerMemberId, pageable);
+    public ResponseEntity<List<Payment>> memberPayments(Pageable pageable) {
+        return ResponseEntity.ok(memberService.getPaymentsByMemberId(headerMemberId, pageable));
     }
 
     @GetMapping("member/payments/count")
