@@ -18,4 +18,12 @@ public class KakaoPayCancelDto {
                 .cancelTaxFreeAmount(memberPaymentDto.getCancelTaxFreeAmount())
                 .build();
     }
+
+    public static KakaoPayCancelDto KakaoPayDtoToKakaoPayCancelDto(KakaoPayDto kakaoPayDto){
+        return KakaoPayCancelDto.builder()
+                .tid(kakaoPayDto.getTid())
+                .cancelAmount(kakaoPayDto.getAmount())
+                .cancelTaxFreeAmount(kakaoPayDto.getTaxFreeAmount())
+                .build();
+    }
 }

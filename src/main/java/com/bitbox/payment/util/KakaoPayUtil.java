@@ -177,16 +177,16 @@ public class KakaoPayUtil {
         }
     }
 
-    public String generatePageCloseCodeWithAlert(String alertMessage) {
-        String htmlCode = "<!DOCTYPE html><html><head></head><body>";
-        htmlCode += "<script>";
-        htmlCode += "window.onload = function() {";
-        htmlCode += "  alert('" + alertMessage + "');";
-        htmlCode += "  window.close();";
-        htmlCode += "};";
-        htmlCode += "</script>";
-        htmlCode += "</body></html>";
-
-        return htmlCode;
-    }
+//    public String generatePageCloseCodeWithAlert(String alertMessage) {
+//        String htmlCode = "<!DOCTYPE html><html><head></head><body>";
+//        htmlCode += "<script>";
+//        htmlCode += "window.onload = function() {";
+//        htmlCode += "  alert('" + alertMessage + "');";
+//        htmlCode += "  window.close();";
+//        htmlCode += "};";
+//        htmlCode += "</script>";
+//        htmlCode += "</body></html>";
+//
+//        return htmlCode;
+//    }
 }

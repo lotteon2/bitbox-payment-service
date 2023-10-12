@@ -2,7 +2,6 @@ package com.bitbox.payment.exception.advice;
 
 import com.bitbox.payment.exception.*;
 import com.bitbox.payment.exception.response.ErrorResponse;
-import com.bitbox.payment.util.KakaoPayUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -15,9 +14,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class ApiControllerAdvice {
-    //KafkaSubmitException, UrgentMailException
-    private final KakaoPayUtil kakaoPayUtil;
-
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse notFoundException(NotFoundException e) {
@@ -27,13 +23,19 @@ public class ApiControllerAdvice {
     }
 
     @ExceptionHandler(SubscriptionExistException.class)
-    public String handleSubscriptionExistException(SubscriptionExistException e) {
-        return kakaoPayUtil.generatePageCloseCodeWithAlert(e.getMessage());
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleSubscriptionExistException(SubscriptionExistException e) {
+        return ErrorResponse.builder()
+                .message(e.getMessage())
+                .build();
     }
 
     @ExceptionHandler(KakaoPayFailException.class)
-    public String handleKakaoPayFailException(KakaoPayFailException e) {
-        return kakaoPayUtil.generatePageCloseCodeWithAlert(e.getMessage());
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public ErrorResponse handleKakaoPayFailException(KakaoPayFailException e) {
+        return ErrorResponse.builder()
+                .message(e.getMessage())
+                .build();
     }
 
     @ExceptionHandler(KakaoPayReadyException.class)
@@ -78,7 +80,6 @@ public class ApiControllerAdvice {
     @ExceptionHandler(KafkaException.class)
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public ErrorResponse handleKafkaException(KafkaException e){
-        //TODO 카프카 예외 발생시 어떻게 처리할까?(카프카에 보내는것이 불가능한 케이스임)
         return ErrorResponse.builder()
                 .message("카프카 서버에 접속할 수 없습니다.")
                 .build();

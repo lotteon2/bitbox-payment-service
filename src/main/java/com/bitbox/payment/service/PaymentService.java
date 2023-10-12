@@ -1,7 +1,6 @@
 package com.bitbox.payment.service;
 
-import com.bitbox.payment.domain.Payment;
-import com.bitbox.payment.domain.Subscription;
+import com.bitbox.payment.dto.KakaoPayCancelDto;
 import com.bitbox.payment.dto.KakaoPayDto;
 import com.bitbox.payment.exception.KakaoPayFailException;
 import com.bitbox.payment.exception.SubscriptionExistException;
@@ -43,12 +42,17 @@ public class PaymentService {
             throw new KakaoPayFailException("카카오 페이 결제 실패");
         }
 
-        kafkaTemplate.send(creditTopic, MemberPaymentDto.builder()
-                        .memberId(kakaoPayDto.getPartnerUserId())
-                        .memberCredit(kakaoPayDto.getCredit())
-                        .tid(kakaoPayDto.getTid())
-                        .cancelAmount(kakaoPayDto.getAmount())
-                        .cancelTaxFreeAmount(kakaoPayDto.getTaxFreeAmount())
-                        .build());
+        try {
+            kafkaTemplate.send(creditTopic, MemberPaymentDto.builder()
+                    .memberId(kakaoPayDto.getPartnerUserId())
+                    .memberCredit(kakaoPayDto.getCredit())
+                    .tid(kakaoPayDto.getTid())
+                    .cancelAmount(kakaoPayDto.getAmount())
+                    .cancelTaxFreeAmount(kakaoPayDto.getTaxFreeAmount())
+                    .build());
+        }catch(Exception e){
+            kakaoPayUtil.callKakaoCancelApi(KakaoPayCancelDto.KakaoPayDtoToKakaoPayCancelDto(kakaoPayDto));
+            throw e;
+        }
     }
 }
