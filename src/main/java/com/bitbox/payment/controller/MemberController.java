@@ -16,25 +16,24 @@ import java.util.List;
 @RequestMapping("/")
 public class MemberController {
     private final MemberService memberService;
-    private String headerMemberId = "csh";
 
     @GetMapping("member/subscription")
-    public ResponseEntity<SubscriptionResponse> memberSubscription() {
-        return ResponseEntity.ok(memberService.getMemberSubscription(headerMemberId));
+    public ResponseEntity<SubscriptionResponse> memberSubscription(@RequestHeader String memberId) {
+        return ResponseEntity.ok(memberService.getMemberSubscription(memberId));
     }
 
     @GetMapping("member/{memberId}/subscription")
-    public ResponseEntity<SubscriptionResponse> memberSubscription(@PathVariable String memberId) {
+    public ResponseEntity<SubscriptionResponse> targetMemberSubscription(@PathVariable String memberId) {
         return ResponseEntity.ok(memberService.getMemberSubscription(memberId));
     }
 
     @GetMapping("member/payments")
-    public ResponseEntity<List<Payment>> memberPayments(Pageable pageable) {
-        return ResponseEntity.ok(memberService.getPaymentsByMemberId(headerMemberId, pageable));
+    public ResponseEntity<List<Payment>> memberPayments(@RequestHeader String memberId, Pageable pageable) {
+        return ResponseEntity.ok(memberService.getPaymentsByMemberId(memberId, pageable));
     }
 
     @GetMapping("member/payments/count")
-    public ResponseEntity<PaymentPageCountResponse> memberPaymentCount(@RequestParam int size){
-        return ResponseEntity.ok(memberService.getPaymentCountByMemberId(headerMemberId,size));
+    public ResponseEntity<PaymentPageCountResponse> memberPaymentCount(@RequestHeader String memberId, @RequestParam int size){
+        return ResponseEntity.ok(memberService.getPaymentCountByMemberId(memberId,size));
     }
 }
