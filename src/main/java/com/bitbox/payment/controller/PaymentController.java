@@ -8,7 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/payments")
@@ -18,26 +21,27 @@ public class PaymentController {
     private final PaymentService paymentService;
     private final KakaoPayUtil kakaoPayUtil;
     private final RedisTemplate<String, String> redisTemplate;
+    private final String SUCCESS_URL = "success";
+    private final String CANCEL_URL = ""; // 진짜 문자열이 없음
+    private final String FAIL_URL = "fail";
 
     @RequestMapping
-    public ResponseEntity<Void> kakaoSuccess(@RequestParam("partnerOrderId") String partnerOrderId,
+    public String kakaoSuccess(@RequestParam("partnerOrderId") String partnerOrderId,
                                        @RequestParam("pg_token") String pgToken){
         ValueOperations<String, String> vop = redisTemplate.opsForValue();
         KakaoPayDto kakaoPayDto = kakaoPayUtil.getKakaoPayDto(vop.get(partnerOrderId), pgToken);
 
         paymentService.createPayment(kakaoPayDto);
-        return ResponseEntity.ok().build();
+        return kakaoPayUtil.generatePageRedirectionCode(SUCCESS_URL);
     }
 
     @GetMapping("/fail")
-    public ResponseEntity<Void> kakaoFail() {
-        return ResponseEntity.internalServerError().build();
+    public String kakaoFail() {
+        return kakaoPayUtil.generatePageRedirectionCode(FAIL_URL);
+    }
+
+    @GetMapping("/cancel")
+    public String kakaoCancel(){
+        return kakaoPayUtil.generatePageRedirectionCode(CANCEL_URL);
     }
 }
-
-/* -> 다음주에 고려
-    jwt 토큰자체(헤더) -> @RequestHeader("Authorization") String jwtToken
-    페이로드(어디에 저장이 될까? 헤더 or 바디?)
-    - 유저아이디(member_id)
-    - 유저권한
- */

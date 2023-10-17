@@ -50,6 +50,9 @@ public class KakaoPayUtil {
     @Value("${kakao-cancelUrl}") // 취소시 호출하는 url
     private String kakaoCancelUrl;
 
+    @Value("${frontUrl}")
+    private String frontUrl;
+
     private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper;
 
@@ -177,16 +180,21 @@ public class KakaoPayUtil {
         }
     }
 
-//    public String generatePageCloseCodeWithAlert(String alertMessage) {
-//        String htmlCode = "<!DOCTYPE html><html><head></head><body>";
-//        htmlCode += "<script>";
-//        htmlCode += "window.onload = function() {";
-//        htmlCode += "  alert('" + alertMessage + "');";
-//        htmlCode += "  window.close();";
-//        htmlCode += "};";
-//        htmlCode += "</script>";
-//        htmlCode += "</body></html>";
-//
-//        return htmlCode;
-//    }
+    public String generatePageRedirectionCode(String url) {
+        String path = frontUrl + url;
+        log.info("url = {}",url);
+        log.info("path = {}",path);
+
+        String htmlCode = "<!DOCTYPE html><html><head></head><body>";
+        htmlCode += "<script>";
+        htmlCode += "window.onload = function() {";
+        //htmlCode += "  window.location.href=\"http://localhost:3001\"";
+        htmlCode += " window.location.href = '" + path + "';";
+        htmlCode += "};";
+        htmlCode += "</script>";
+        htmlCode += "</body></html>";
+
+        log.info("html code = {}", htmlCode);
+        return htmlCode;
+    }
 }

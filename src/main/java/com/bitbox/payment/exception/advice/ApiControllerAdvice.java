@@ -2,6 +2,7 @@ package com.bitbox.payment.exception.advice;
 
 import com.bitbox.payment.exception.*;
 import com.bitbox.payment.exception.response.ErrorResponse;
+import com.bitbox.payment.util.KakaoPayUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class ApiControllerAdvice {
+    private final KakaoPayUtil kakaoPayUtil;
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse notFoundException(NotFoundException e) {
@@ -23,11 +25,8 @@ public class ApiControllerAdvice {
     }
 
     @ExceptionHandler(SubscriptionExistException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleSubscriptionExistException(SubscriptionExistException e) {
-        return ErrorResponse.builder()
-                .message(e.getMessage())
-                .build();
+    public String handleSubscriptionExistException(SubscriptionExistException e) {
+        return kakaoPayUtil.generatePageRedirectionCode("fail");
     }
 
     @ExceptionHandler(KakaoPayFailException.class)
