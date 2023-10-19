@@ -18,7 +18,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("member/subscription")
-    public ResponseEntity<SubscriptionResponse> memberSubscription(@RequestHeader String memberId) {
+    public ResponseEntity<SubscriptionResponse> memberSubscription(String memberId) {
         return ResponseEntity.ok(memberService.getMemberSubscription(memberId));
     }
 
@@ -36,4 +36,5 @@ public class MemberController {
     public ResponseEntity<PaymentPageCountResponse> memberPaymentCount(@RequestHeader String memberId, @RequestParam int size){
         return ResponseEntity.ok(memberService.getPaymentCountByMemberId(memberId,size));
     }
+
 }
