@@ -38,7 +38,7 @@ public class EntityValidation {
         }
 
         // 3. 구독권 가격을 조작해서 API를 요청한 경우
-        if (subscriptionType != null && PRICE_TAG.containsKey(subscriptionType)){
+        if (subscriptionType != null && !PRICE_TAG.containsKey(subscriptionType)){
             log.error(badMessage);
             throw new KakaoPayArgumentException("나쁜짓 할 수 없습니다");
         }
@@ -50,7 +50,9 @@ public class EntityValidation {
         }
 
         // 5. [수량 * 크레딧]이 서버측 가격하고 다른 경우(즉, 가격을 조작해서 API를 요청한 경우)
-        if (quantity * CREDIT_PRICE != totalAmount || quantity * CREDIT_PRICE * 0.1 != taxFreeAmount) {
+        if (subscriptionType == null &&
+                (chargeCredit * CREDIT_PRICE != totalAmount ||
+                chargeCredit * CREDIT_PRICE * 0.1 != taxFreeAmount)) {
             log.error(badMessage);
             throw new KakaoPayArgumentException("나쁜짓 할 수 없습니다");
         }
