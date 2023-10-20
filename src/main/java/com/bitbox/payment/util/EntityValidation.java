@@ -37,28 +37,23 @@ public class EntityValidation {
             throw new KakaoPayArgumentException("구독권 결제의 경우 수량은 항상 1이여야 합니다");
         }
 
-        // 3. 구독권의 가격을 조작해서 API를 요청한 경우
+        // 3. 구독권 가격을 조작해서 API를 요청한 경우
         if (subscriptionType != null && PRICE_TAG.containsKey(subscriptionType)){
             log.error(badMessage);
             throw new KakaoPayArgumentException("나쁜짓 할 수 없습니다");
         }
 
-        // 4. [수량 * 크레딧]이 서버측 가격하고 다른 경우(즉, 가격을 조작해서 API를 요청한 경우)
+        // 4. 구독권 부가세 가격을 조작해서 API를 요청한 경우
+        if (subscriptionType != null && taxFreeAmount != PRICE_TAG.get(subscriptionType) * 0.1) {
+            log.error(badMessage);
+            throw new KakaoPayArgumentException("나쁜짓 할 수 없습니다");
+        }
+
+        // 5. [수량 * 크레딧]이 서버측 가격하고 다른 경우(즉, 가격을 조작해서 API를 요청한 경우)
         if (quantity * CREDIT_PRICE != totalAmount || quantity * CREDIT_PRICE * 0.1 != taxFreeAmount) {
             log.error(badMessage);
             throw new KakaoPayArgumentException("나쁜짓 할 수 없습니다");
         }
 
-        // 5. taxFreeAmount와 티어에 해당하는 값에 *0.1 한 값이 일치하지 않는 경우
-        if (taxFreeAmount != PRICE_TAG.get(subscriptionType) * 0.1) {
-            log.error(badMessage);
-            throw new KakaoPayArgumentException("나쁜짓 할 수 없습니다");
-        }
-
-        // 6. [수량 * 크레딧]이 서버측 가격하고 다른경우(즉, 가격을 조작해서 API를 요청한 경우)
-        if (quantity * CREDIT_PRICE != totalAmount || quantity * CREDIT_PRICE * 0.1 != taxFreeAmount) {
-            log.error(badMessage);
-            throw new KakaoPayArgumentException("나쁜짓 할 수 없습니다");
-        }
     }
 }
