@@ -17,10 +17,10 @@ import java.util.List;
 public class MemberController {
     private final MemberService memberService;
 
-    @GetMapping("member/subscription")
-    public ResponseEntity<SubscriptionResponse> memberSubscription(String memberId) {
-        return ResponseEntity.ok(memberService.getMemberSubscription(memberId));
-    }
+//    @GetMapping("member/subscription")
+//    public ResponseEntity<SubscriptionResponse> memberSubscription(@RequestParam String memberId) {
+//        return ResponseEntity.ok(memberService.getMemberSubscription(memberId));
+//    }
 
     @GetMapping("member/{memberId}/subscription")
     public ResponseEntity<SubscriptionResponse> targetMemberSubscription(@PathVariable String memberId) {
