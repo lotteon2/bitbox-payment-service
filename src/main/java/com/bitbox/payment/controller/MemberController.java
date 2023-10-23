@@ -17,10 +17,10 @@ import java.util.List;
 public class MemberController {
     private final MemberService memberService;
 
-    @GetMapping("member/subscription")
-    public ResponseEntity<SubscriptionResponse> memberSubscription(@RequestHeader String memberId) {
-        return ResponseEntity.ok(memberService.getMemberSubscription(memberId));
-    }
+//    @GetMapping("member/subscription")
+//    public ResponseEntity<SubscriptionResponse> memberSubscription(@RequestParam String memberId) {
+//        return ResponseEntity.ok(memberService.getMemberSubscription(memberId));
+//    }
 
     @GetMapping("member/{memberId}/subscription")
     public ResponseEntity<SubscriptionResponse> targetMemberSubscription(@PathVariable String memberId) {
@@ -36,4 +36,5 @@ public class MemberController {
     public ResponseEntity<PaymentPageCountResponse> memberPaymentCount(@RequestHeader String memberId, @RequestParam int size){
         return ResponseEntity.ok(memberService.getPaymentCountByMemberId(memberId,size));
     }
+
 }
