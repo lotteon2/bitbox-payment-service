@@ -1,14 +1,18 @@
 package com.bitbox.payment.dto;
 
 import io.github.bitbox.bitbox.enums.SubscriptionType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PaymentDto {
     private String partnerUserId;
     @NotEmpty(message = "파트너 주문 번호는 비어있을 수 없습니다.")
