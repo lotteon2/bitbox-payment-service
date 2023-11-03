@@ -182,19 +182,15 @@ public class KakaoPayUtil {
 
     public String generatePageRedirectionCode(String url) {
         String path = frontUrl + url;
-        log.info("url = {}",url);
-        log.info("path = {}",path);
 
         String htmlCode = "<!DOCTYPE html><html><head></head><body>";
         htmlCode += "<script>";
         htmlCode += "window.onload = function() {";
-        //htmlCode += "  window.location.href=\"http://localhost:3001\"";
         htmlCode += " window.location.href = '" + path + "';";
         htmlCode += "};";
         htmlCode += "</script>";
         htmlCode += "</body></html>";
 
-        log.info("html code = {}", htmlCode);
         return htmlCode;
     }
 }

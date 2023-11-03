@@ -4,7 +4,6 @@ import com.bitbox.payment.dto.KakaoPayDto;
 import com.bitbox.payment.service.PaymentService;
 import com.bitbox.payment.util.KakaoPayUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/payments")
 @RequiredArgsConstructor
-@Slf4j
 public class PaymentController {
     private final PaymentService paymentService;
     private final KakaoPayUtil kakaoPayUtil;
